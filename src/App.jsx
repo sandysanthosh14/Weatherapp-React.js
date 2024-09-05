@@ -41,15 +41,59 @@ function App() {
   const [city, setcity] = useState('chennai')
   const [country, setcountry] = useState('india')
   const [wind, setwind] = useState(30)
+  const [loading, setloading] = useState(false)
+  
+
+  const search=async()=>{
+    setloading(true)
+    
+    
+    const url=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=8f0791efd4db2094c4432fc1a273eb3e&units=metric`
+     try{
+      let response= await fetch(url);
+      let data= await response.json();
+      console.log(data);
+      setHumidity(data.main.humidity);
+      setlog(data.coord.lon);
+      setcountry(data.sys.country);
+      settemp(data.main.temp);
+      setwind(data.wind.speed);
+      setlat(data.coord.lat);
+      setcity(data.name);
+
+     }catch(error){
+      console.log(error)
+
+     }finally{
+      setloading(false)
+
+     };
+  
+  };
+
+ 
+  
+
+
+  const updatesearch=(e)=>{
+    if (e.key==="Enter"){
+      search()
+    };
+    };
+
+  const updatecity=(e)=>{
+    setcity(e.target.value)
+  };
+
   return (
     
       <div className="container">
           <div className="input-box">
-            <input type='text'id='search' className='search'></input>
-            <img src={searchicon} className='searchicon'></img>
+            <input type='text'id='search' className='search' value={city} onChange={updatecity} onKeyDown={updatesearch}></input>
+            <img src={searchicon} className='searchicon' onClick={search}></img>
 
           </div>
-          <WeatherDetails wind={wind}icon={icon} temp={temp} city={city} country={country}log={log} lat={lat} Humidity={Humidity}></WeatherDetails>
+          <WeatherDetails wind={wind} icon={icon} temp={temp} city={city} country={country} log={log} lat={lat} Humidity={Humidity}></WeatherDetails>
       </div>
   )
 }
